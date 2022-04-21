@@ -1099,7 +1099,7 @@ class PlayState extends MusicBeatState
 		#end
 		
 		var daSong:String = Paths.formatToSongPath(curSong);
-		if (isStoryMode && !seenCutscene)
+		if (FlxG.save.data.cutscenes && !seenCutscene)
 		{
 			switch (daSong)
 			{
