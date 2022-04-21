@@ -39,7 +39,6 @@ class MainMenuState extends MusicBeatState
 		'fart',
 		#if ACHIEVEMENTS_ALLOWED 'awards', #end
 		'credits',
-		#if !switch 'donate', #end
 		'options'
 	];
 
@@ -201,10 +200,6 @@ class MainMenuState extends MusicBeatState
 
 			if (controls.ACCEPT)
 			{
-				if (optionShit[curSelected] == 'donate')
-				{
-					CoolUtil.browserLoad('https://ninja-muffin24.itch.io/funkin');
-				}
 				if (optionShit[curSelected] == 'fart')
 				{
 					FlxG.sound.play(Paths.sound('shitted'));
