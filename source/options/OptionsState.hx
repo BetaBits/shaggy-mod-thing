@@ -33,6 +33,7 @@ class OptionsState extends MusicBeatState
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	private static var curSelected:Int = 0;
 	public static var menuBG:FlxSprite;
+	public static var comingfromPause:Bool = false;
 
 	function openSelectedSubstate(label:String) {
 		switch(label) {
@@ -60,6 +61,13 @@ class OptionsState extends MusicBeatState
 		#if desktop
 		DiscordClient.changePresence("Options Menu", null);
 		#end
+
+		// prob an easier way to do this but it works so idc
+		if (!PauseSubState.dontfuckingcrashAsshole){
+			comingfromPause = false;
+		} else{
+			comingfromPause = true;
+		}
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.color = 0xFFea71fd;
@@ -108,7 +116,11 @@ class OptionsState extends MusicBeatState
 
 		if (controls.BACK) {
 			FlxG.sound.play(Paths.sound('cancelMenu'));
-			MusicBeatState.switchState(new MainMenuState());
+			if (!comingfromPause){
+				MusicBeatState.switchState(new MainMenuState());
+			} else {
+				MusicBeatState.switchState(new PlayState());
+			}
 		}
 
 		if (controls.ACCEPT) {
