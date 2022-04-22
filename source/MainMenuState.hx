@@ -20,6 +20,10 @@ import lime.app.Application;
 import Achievements;
 import editors.MasterEditorMenu;
 import flixel.input.keyboard.FlxKey;
+import Shaders.PulseEffect;
+#if shaders
+import openfl.filters.ShaderFilter;
+#end
 
 using StringTools;
 
@@ -28,6 +32,8 @@ class MainMenuState extends MusicBeatState
 	public static var psychEngineVersion:String = '0.5.2h'; //This is also used for Discord RPC
 	public static var curSelected:Int = 0;
 
+	public var screenshader:Shaders.PulseEffect = new PulseEffect();
+	public var curbg:FlxSprite;
 
 	var menuItems:FlxTypedGroup<FlxSprite>;
 	private var camGame:FlxCamera;
@@ -48,6 +54,7 @@ class MainMenuState extends MusicBeatState
 	var freeplaypenis:FlxSprite;
 	var optioncum:FlxSprite;
 	var awardfeces:FlxSprite;
+	var saggy:FlxSprite;
 
 	var camFollow:FlxObject;
 	var camFollowPos:FlxObject;
@@ -75,6 +82,29 @@ class MainMenuState extends MusicBeatState
 		transOut = FlxTransitionableState.defaultTransOut;
 
 		persistentUpdate = persistentDraw = true;
+
+		var placebg:FlxSprite = new FlxSprite(-80).loadGraphic(Paths.image('placeholderbg'));
+		placebg.scrollFactor.set(0, 0);
+		placebg.setGraphicSize(Std.int(placebg.width * 1.175));
+		placebg.updateHitbox();
+		placebg.screenCenter();
+		placebg.antialiasing = ClientPrefs.globalAntialiasing;
+		add(placebg);
+
+		var testshader:Shaders.GlitchEffect = new Shaders.GlitchEffect();
+		testshader.waveAmplitude = 0.1;
+		testshader.waveFrequency = 5;
+		testshader.waveSpeed = 2;
+		placebg.shader = testshader.shader;
+		curbg = placebg;
+
+		saggy = new FlxSprite(-620, -130);
+		saggy.scale.set(1.2, 1.2);
+		saggy.frames = Paths.getSparrowAtlas('menuShaggy');
+		saggy.animation.addByPrefix('idle', 'shaggy_idle', 24);
+		saggy.animation.play('idle');
+		saggy.antialiasing = ClientPrefs.globalAntialiasing;
+		add(saggy);
 
 		var bg:FlxSprite = new FlxSprite(-80).loadGraphic(Paths.image('menuBG'));
 		bg.scrollFactor.set(0, 0);
@@ -234,6 +264,15 @@ class MainMenuState extends MusicBeatState
 		if (FlxG.sound.music.volume < 0.8)
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
+		}
+
+		if (curbg != null)
+		{
+			if (curbg.active)
+			{
+			var shad = cast(curbg.shader,Shaders.GlitchShader);
+			shad.uTime.value[0] += elapsed;
+			}
 		}
 
 		var lerpVal:Float = CoolUtil.boundTo(elapsed * 7.5, 0, 1);
