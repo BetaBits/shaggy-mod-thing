@@ -34,20 +34,24 @@ class ShagMyBallsSubState extends BaseOptionsMenu
 		title = 'Mod Options';
 		rpcTitle = 'Mod Options Menu'; //for Discord Rich Presence
 
-		//I'd suggest using "Downscroll" as an example for making your own option since it is the simplest here
-		var option:Option = new Option('Cutscenes', //Name
-			'If checked, cutscenes will be enabled.', //Description
-			'cutscenes', //Save data variable name
-			'bool', //Variable type
-			true); //Default value
+		var option:Option = new Option('Cutscenes', 
+			'If checked, cutscenes will be enabled.', 
+			'cutscenes', 
+			'bool',
+			true); 
 		addOption(option);
 
+
+
+
+
+		
 		/* 
-		var option:Option = new Option('Middlescroll',
-			'If checked, your notes get centered.',
-			'middleScroll',
-			'bool',
-			false);
+		var option:Option = new Option('Middlescroll', //Name
+			'If checked, your notes get centered.', //Description
+			'middleScroll', //Save data variable name
+			'bool', //Variable type
+			false); //Default value
 		addOption(option);
 		*/
 		
