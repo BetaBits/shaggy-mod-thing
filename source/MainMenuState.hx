@@ -3,10 +3,12 @@ package;
 #if desktop
 import Discord.DiscordClient;
 #end
+import haxe.Json;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxCamera;
+import flixel.util.FlxTimer;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.effects.FlxFlicker;
 import flixel.graphics.frames.FlxAtlasFrames;
@@ -27,6 +29,15 @@ import openfl.filters.ShaderFilter;
 
 using StringTools;
 
+typedef ShagData =
+{
+	
+	scalex:Float,
+	scaley:Float,
+	shagx:Float,
+	shagy:Float,
+	antialias:Bool
+}
 class MainMenuState extends MusicBeatState
 {
 	public static var psychEngineVersion:String = '0.5.2h'; //This is also used for Discord RPC
@@ -60,9 +71,12 @@ class MainMenuState extends MusicBeatState
 	var camFollowPos:FlxObject;
 	var debugKeys:Array<FlxKey>;
 
+	var shaggyJSON:ShagData;
+
 	override function create()
 	{
 		WeekData.loadTheFirstEnabledMod();
+		shaggyJSON = Json.parse(Paths.getTextFromFile('images/shagMenu.json'));
 
 		#if desktop
 		// Updating Discord Rich Presence
@@ -98,12 +112,16 @@ class MainMenuState extends MusicBeatState
 		placebg.shader = testshader.shader;
 		curbg = placebg;
 
-		saggy = new FlxSprite(-620, -130);
-		saggy.scale.set(1.2, 1.2);
+		saggy = new FlxSprite(shaggyJSON.shagx, shaggyJSON.shagy);
+		saggy.scale.set(shaggyJSON.scalex, shaggyJSON.scaley);
 		saggy.frames = Paths.getSparrowAtlas('menuShaggy');
 		saggy.animation.addByPrefix('idle', 'shaggy_idle', 24);
 		saggy.animation.play('idle');
-		saggy.antialiasing = ClientPrefs.globalAntialiasing;
+		if(shaggyJSON.antialias) {
+			saggy.antialiasing = ClientPrefs.globalAntialiasing;
+		} else {
+			saggy.antialiasing = false;
+		}
 		add(saggy);
 
 		var bg:FlxSprite = new FlxSprite(-80).loadGraphic(Paths.image('menuBG'));
@@ -339,13 +357,10 @@ class MainMenuState extends MusicBeatState
 					{
 						if (curSelected != spr.ID)
 						{
-							FlxTween.tween(spr, {alpha: 0}, 0.4, {
-								ease: FlxEase.quadOut,
-								onComplete: function(twn:FlxTween)
+							new FlxTimer().start(2, function(tmr:FlxTimer)
 								{
 									spr.kill();
-								}
-							});
+								});
 						}
 						else
 						{
